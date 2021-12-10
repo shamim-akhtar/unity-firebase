@@ -16,10 +16,28 @@ public class CLogin : MonoBehaviour
   Button ButtonBack;
   [SerializeField]
   Text TextStatus;
+  [SerializeField]
+  RectTransform LoginEmailPasswordScreen;
+  [SerializeField]
+  Button ButtonEmailLogin;
+  [SerializeField]
+  Button ButtonLogin;
+  [SerializeField]
+  Button ButtonRegister;
+  [SerializeField]
+  InputField InputEmail;
+  [SerializeField]
+  InputField InputPassword;
   #endregion
 
   #region Facebook Login
   #endregion
+
+  [SerializeField]
+  CFirebase FirebaseLogin;
+
+  string mEmail;
+  string mPassword;
 
   // Start is called before the first frame update
   void Start()
@@ -27,11 +45,30 @@ public class CLogin : MonoBehaviour
     LoginScreen.gameObject.SetActive(true);
     LoginProgressScreen.gameObject.SetActive(false);
     ProfileScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(false);
 
     ButtonBack.onClick.AddListener(
       delegate
       {
         Back();
+      });
+
+    ButtonRegister.onClick.AddListener(
+      delegate
+      {
+        FirebaseLogin.CreateUserWithEmailAndPassword(InputEmail.text, InputPassword.text);
+      });
+
+    ButtonLogin.onClick.AddListener(
+      delegate
+      {
+        FirebaseLogin.SigninWithEmailAndPassword(InputEmail.text, InputPassword.text);
+      });
+    //ButtonRegister.interactable = false;
+    ButtonEmailLogin.onClick.AddListener(
+      delegate
+      {
+        OnClickEmailLogin();
       });
   }
 
@@ -40,6 +77,7 @@ public class CLogin : MonoBehaviour
     LoginScreen.gameObject.SetActive(false);
     LoginProgressScreen.gameObject.SetActive(true);
     ProfileScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(false);
 
     ButtonBack.gameObject.SetActive(false);
     TextStatus.gameObject.SetActive(true);
@@ -50,6 +88,7 @@ public class CLogin : MonoBehaviour
   {
     LoginScreen.gameObject.SetActive(false);
     LoginProgressScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(false);
     ProfileScreen.gameObject.SetActive(true);
   }
 
@@ -58,6 +97,7 @@ public class CLogin : MonoBehaviour
     LoginScreen.gameObject.SetActive(false);
     LoginProgressScreen.gameObject.SetActive(true);
     ProfileScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(false);
 
     ButtonBack.gameObject.SetActive(true);
     TextStatus.gameObject.SetActive(true);
@@ -69,5 +109,14 @@ public class CLogin : MonoBehaviour
     LoginScreen.gameObject.SetActive(true);
     LoginProgressScreen.gameObject.SetActive(false);
     ProfileScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(false);
+  }
+
+  void OnClickEmailLogin()
+  {
+    LoginScreen.gameObject.SetActive(false);
+    LoginProgressScreen.gameObject.SetActive(false);
+    ProfileScreen.gameObject.SetActive(false);
+    LoginEmailPasswordScreen.gameObject.SetActive(true);
   }
 }
