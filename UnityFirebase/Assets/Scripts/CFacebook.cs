@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Facebook.Unity;
+using UnityEngine.Networking;
 
 public class CFacebook : MonoBehaviour
 {
@@ -104,9 +105,18 @@ public class CFacebook : MonoBehaviour
   {
     string url = "https" + "://graph.facebook.com/" + AccessToken.CurrentAccessToken.UserId + "/picture";
     url += "?access_token=" + AccessToken.CurrentAccessToken.TokenString;
-    WWW www = new WWW(url);
-    yield return www;
-    ImageProfile.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+    UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+    yield return www.SendWebRequest();
+
+    if (www.result != UnityWebRequest.Result.Success)
+    {
+      Debug.Log(www.error);
+    }
+    else
+    {
+      Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+      ImageProfile.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+    }
   }
 
   private void LoginStatusCallback(ILoginStatusResult result)
