@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80934087370",
+    "project_id": "concise-vertex-334008",
+    "storage_bucket": "concise-vertex-334008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80934087370:android:cd00a65121b045e46da233",
+        "android_client_info": {
+          "package_name": "com.faramira.quizzles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80934087370-j4imib4d8lvl79r2rmdqkpj09e7qk9nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgxt5BV43-c-fN0YvfUBmhDF2l2FHFLGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80934087370-j4imib4d8lvl79r2rmdqkpj09e7qk9nu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
