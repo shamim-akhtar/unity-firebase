@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Facebook.Unity;
+using UnityEngine.Networking;
+using System;
 
 public class CFacebook : MonoBehaviour
 {
@@ -91,6 +93,8 @@ public class CFacebook : MonoBehaviour
       TextProfileName.text = AccessToken.CurrentAccessToken.UserId;
       Debug.Log(AccessToken.CurrentAccessToken.ToJson());
 
+      LoginFirebaseFacebook(aToken.TokenString);
+
       LoginScreen.OnLoginSuccess();
     }
     else
@@ -104,9 +108,18 @@ public class CFacebook : MonoBehaviour
   {
     string url = "https" + "://graph.facebook.com/" + AccessToken.CurrentAccessToken.UserId + "/picture";
     url += "?access_token=" + AccessToken.CurrentAccessToken.TokenString;
-    WWW www = new WWW(url);
-    yield return www;
-    ImageProfile.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+    UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+    yield return www.SendWebRequest();
+
+    if (www.result != UnityWebRequest.Result.Success)
+    {
+      Debug.Log(www.error);
+    }
+    else
+    {
+      Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+      ImageProfile.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+    }
   }
 
   private void LoginStatusCallback(ILoginStatusResult result)
@@ -131,5 +144,28 @@ public class CFacebook : MonoBehaviour
 
       LoginScreen.OnLoginSuccess();
     }
+  }
+
+  private void LoginFirebaseFacebook(String accessToken)
+  {
+    Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+
+    Firebase.Auth.Credential credential = Firebase.Auth.FacebookAuthProvider.GetCredential(accessToken);
+    auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
+      if (task.IsCanceled)
+      {
+        Debug.LogError("SignInWithCredentialAsync was canceled.");
+        return;
+      }
+      if (task.IsFaulted)
+      {
+        Debug.LogError("SignInWithCredentialAsync encountered an error: " + task.Exception);
+        return;
+      }
+
+      Firebase.Auth.FirebaseUser newUser = task.Result;
+      Debug.LogFormat("User signed in successfully: {0} ({1})",
+          newUser.DisplayName, newUser.UserId);
+    });
   }
 }
